@@ -510,7 +510,7 @@
 
         var gameMode1 = document.getElementById("gm1");
         var gameMode2 = document.getElementById("gm2");
-
+        var direction = new Map([['left',DIR.LEFT],['right',DIR.RIGHT],['change',DIR.UP],['die',DIR.DOWN]]);
         function chooseMode() {
             var gameMode1 = document.getElementById("gm1");
             var gameMode2 = document.getElementById("gm2");
@@ -532,7 +532,7 @@
         chooseMode();
 
         var processing = false;
-        var direction;
+
         function searchPhrase(phrase, actions) {
             var first=[], second=[], third=[];
             for (var i = 0; i < phrase.length; i++) {
