@@ -538,7 +538,7 @@
         chooseMode();
 
 
-
+/*
         function searchPhrase(phrase, actions) {
 
             for (var i = 0; i < phrase.length; i++) {
@@ -567,16 +567,47 @@
                 }
             }
         }
+        */
 
-
+        var processing = false;
         function voiceControl() {
             var handled = false;
 
-            if (playing && annyang) {
+            if (playing && annyang && !processing) {
                 annyang.addCallback('result', function(phrase) {
                     console.log(phrase);
                     var find = true;
-                    searchPhrase(phrase, actions);
+                    //searchPhrase(phrase, actions);
+                    for (var i = 0; i < phrase.length; i++) {
+                        var word = phrase[i]
+                        var char;
+                        var j = 0;
+                        char = word.charAt(j);
+                        if (char == " ") {
+                            char = word.charAt(1);
+                            j = 0;
+                        }
+                        if (char == turnL) {
+                            actions.push(DIR.LEFT);
+                            processing = true;
+                            break;
+                        } else if (char == turnR) {
+                            actions.push(DIR.RIGHT);
+                            processing = true;
+                            break;
+                        } else if (char == change) {
+                            actions.push(DIR.UP);
+                            processing = true;
+                            break;
+                        } else if (char == down) {
+                            for (var i = 0; i < 5; i++) {
+                                actions.push(DIR.DOWN);
+                                processing = true;
+                            }
+                            break;
+                        }
+                    }
+                    if(processing) { annyang.pause(); }
                 });
 
                 //annyang.addCommands(commands);
@@ -703,6 +734,8 @@
                     drop();
                     break;
             }
+            annyang.resume();
+            processing=false;
         }
 
         function move(dir) {
