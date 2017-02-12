@@ -488,7 +488,7 @@
                         handled = true;
                         break;
                 }
-            } else if (ev.keyCode == KEY.SPACE || gameMode1.style.display == "none" || gameMode2.style.display == "none") {
+            } else if (ev.keyCode == KEY.SPACE) {
                 play();
                 handled = true;
             }
@@ -515,20 +515,14 @@
             var gameMode1 = document.getElementById("gm1");
             var gameMode2 = document.getElementById("gm2");
             gameMode1.onclick = function() {
-                turnL = 'l';
-                turnR = 'r';
-                down = 'd';
-                change = 'c';
+                direction = new Map([['left',DIR.LEFT],['right',DIR.RIGHT],['change',DIR.UP],['die',DIR.DOWN]]);
                 gameMode1.style.background = "red";
                 gameMode2.style.display = "none";
                 play();
                 handled = true;
             };
             gameMode2.onclick = function() {
-                turnL = 'r';
-                turnR = 'l';
-                down = 'd';
-                change = 'c';
+                direction = new Map([['left',DIR.RIGHT],['right',DIR.LEFT],['change',DIR.UP],['die',DIR.DOWN]]);
                 gameMode2.style.background = "red";
                 gameMode1.style.display = "none";
                 play();
@@ -537,13 +531,52 @@
         }
         chooseMode();
 
-
-/*
+        var processing = false;
+        var direction;
         function searchPhrase(phrase, actions) {
-
+            var first=[], second=[], third=[];
             for (var i = 0; i < phrase.length; i++) {
-                var word = phrase[i]
-                var char;
+                //direction = new Map([['left',DIR.LEFT],['right',DIR.RIGHT],['change',DIR.UP],['die',DIR.DOWN]]);
+                var words = phrase[i].trim().split(" ");
+                first.push(words[0]);
+                second.push(words[1]);
+                third.push(words[2]);
+            }
+            console.log("first:"+ first);
+            console.log("second:"+second);
+
+            var distance=10;
+            direction.forEach(function(value, key) {
+              if(first.includes(key)) {
+                actions.push(value);
+                if(key=='die'){
+                  for(var i=0; i<distance; i++){
+                    actions.push(value);
+                  }
+                }
+              }
+              if(second.includes(key)) {
+                actions.push(value);
+                if(key=='die'){
+                  for(var i=0; i<distance; i++){
+                    actions.push(value);
+                  }
+                }
+              }
+              if(third.includes(key)) {
+                actions.push(value);
+                if(key=='die'){
+                  for(var i=0; i<distance; i++){
+                    actions.push(value);
+                  }
+                }
+              }
+            });
+
+
+
+
+                /*var char;
                 var j = 0;
                 char = word.charAt(j);
                 if (char == " ") {
@@ -552,24 +585,29 @@
                 }
                 if (char == turnL) {
                     actions.push(DIR.LEFT);
+                    processing = true;
                     break;
                 } else if (char == turnR) {
                     actions.push(DIR.RIGHT);
+                    processing = true;
                     break;
                 } else if (char == change) {
                     actions.push(DIR.UP);
+                    processing = true;
                     break;
                 } else if (char == down) {
                     for (var i = 0; i < 5; i++) {
                         actions.push(DIR.DOWN);
+                        processing = true;
                     }
                     break;
                 }
-            }
-        }
-        */
+                */
 
-        var processing = false;
+        }
+
+
+
         function voiceControl() {
             var handled = false;
 
@@ -577,7 +615,8 @@
                 annyang.addCallback('result', function(phrase) {
                     console.log(phrase);
                     var find = true;
-                    //searchPhrase(phrase, actions);
+                    searchPhrase(phrase, actions);
+                    /*
                     for (var i = 0; i < phrase.length; i++) {
                         var word = phrase[i]
                         var char;
@@ -606,7 +645,7 @@
                             }
                             break;
                         }
-                    }
+                    }*/
                     if(processing) { annyang.pause(); }
                 });
 
